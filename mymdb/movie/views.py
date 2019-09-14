@@ -1,6 +1,12 @@
+from django.urls import reverse
 from django.views import generic
-from django.shortcuts import render
-from .models import Movie, Person
+
+from movie.forms import VoteForm
+from .models import (
+    Movie,
+    Person,
+    Vote
+)
 
 
 class MovieList(generic.ListView):
@@ -11,6 +17,33 @@ class MovieList(generic.ListView):
 class MovieDetail(generic.DetailView):
     model = Movie
     queryset = Movie.objects.all_with_related_persons()
+
+    def get_context_data(self, **kwargs):
+        ctx = super().get_context_data(**kwargs)
+        if self.request.user.is_authenticated:
+            vote = Vote.objects.get_vote_or_unsaved_blank_vote(
+                movie=self.object,
+                user=self.request.user
+            )
+            if vote.id:
+                vote_form_url = reverse(
+                    'movie:UpdateVote',
+                    kwargs={
+                        'movie_id': vote.movie.id,
+                        'pk': vote.id
+                    }
+                )
+            else:
+                vote_form_url = reverse(
+                    'movie:CreateVote',
+                    kwargs={
+                        'movie_id': vote.movie.id,
+                    }
+                )
+            vote_form = VoteForm(instance=vote)
+            ctx['vote_form'] = vote_form
+            ctx['vote_form_url'] = vote_form_url
+            return ctx
 
 
 class PersonDetail(generic.DetailView):
