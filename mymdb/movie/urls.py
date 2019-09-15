@@ -5,7 +5,7 @@ app_name = 'movie'
 
 urlpatterns = [
 
-    path('movies',
+    path('movies/',
          views.MovieList.as_view(),
          name='MovieList'),
 
@@ -20,5 +20,9 @@ urlpatterns = [
     path('movies/<int:movie_id>/vote/<int:pk>',
          views.UpdateVote.as_view(),
          name='UpdateVote'),
+
+    path('movie/<int:movie_id>/image/upload',
+         views.MovieImageUpload.as_view(),
+         name='MovieImageUpload'),
 ]
 

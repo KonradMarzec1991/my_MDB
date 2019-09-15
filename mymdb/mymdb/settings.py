@@ -132,3 +132,6 @@ STATIC_URL = '/static/'
 
 LOGIN_REDIRECT_URL = 'movie:MovieList'
 LOGIN_URL = 'user:login'
+
+MEDIA_URL = '/uploaded/'
+MEDIA_ROOT = os.path.join(BASE_DIR, '../media_root')
